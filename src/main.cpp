@@ -73,9 +73,9 @@ int main() {
   cost_multipliers.push_back(10);     // CTE cost
   cost_multipliers.push_back(400);     // Epsi cost 
   cost_multipliers.push_back(1);        // v cost
-  cost_multipliers.push_back(70);        // delta actuator use cost
+  cost_multipliers.push_back(8);        // delta actuator use cost
   cost_multipliers.push_back(10);        // a actuator use cost
-  cost_multipliers.push_back(70);       // delta actuator gap cost
+  cost_multipliers.push_back(10);       // delta actuator gap cost
   cost_multipliers.push_back(10);       // a actuator gap cost
   MPC mpc(cost_multipliers);
 
@@ -122,15 +122,15 @@ int main() {
           double epsi = -atan(coeffs[1]);
 
           // Here we generate the current state predictions
-          int latency = 0.06;
+          int latency = 0.1;
           double Lf = 2.67;
 
-          double state_psi = 0 + v/Lf * (steer_value) * latency;
-          double state_v = v + throttle_value*latency;
-          double state_x = 0 + v*cos(0)*latency;
+          double state_psi = 0;// + v/Lf * (steer_value) * latency;
+          double state_v = v;// + throttle_value*latency;
+          double state_x = 0;// + v*cos(0)*latency;
           double state_y = 0;// + v*sin(state_psi)*latency;
-          double state_epsi = epsi - v/Lf * steer_value * latency; // - atan(coeffs[1]); 
-          double state_cte = cte + v*sin(epsi)*latency;
+          double state_epsi = epsi;// - v/Lf * steer_value * latency; // - atan(coeffs[1]); 
+          double state_cte = cte;// + v*sin(epsi)*latency;
 
           Eigen::VectorXd state(6);
           state << state_x, state_y, state_psi, state_v, state_cte, state_epsi;
@@ -216,7 +216,7 @@ int main() {
           //
           // NOTE: REMEMBER TO SET THIS TO 100 MILLISECONDS BEFORE
           // SUBMITTING.
-          //this_thread::sleep_for(chrono::milliseconds(100));
+          this_thread::sleep_for(chrono::milliseconds(100));
           ws.send(msg.data(), msg.length(), uWS::OpCode::TEXT);
         }
       } else {
