@@ -3,6 +3,24 @@ Self-Driving Car Engineer Nanodegree Program
 
 ---
 
+## Project Goal
+
+The goal of the project is to model a self-driving using a Model Predictive Controller. The model is tested on a simulated car in the Udacity simulator. The following are expectations of the project:
+
+- The car should stay within the lane and not veer too far off the center.
+- The car should drive smoothly minimizing any jerky movements.
+- Should drive at or below the desired speed.
+
+### Vehicle Model
+
+The model used for the vehicle is the kinematic bicycle model. This model takes into account the dynamics of the system, like velocity, heading and ignores other factors like friction, mass and other forces. The following set of equations describe the state of a vehicle any given time:
+
+![Equations](https://latex.codecogs.com/svg.latex?%5Cinline%20%5Cbegin%7Balign*%7D%20x_%7Bt+1%7D%20%26%3D%20x_t%20+%20v_t%20cos%28%5Cpsi_t%29dt%5C%5C%20y_%7Bt+1%7D%20%26%3D%20y_t%20+%20v_t%20sin%28%5Cpsi_t%29dt%5C%5C%20%5Cpsi_%7Bt+1%7D%20%26%3D%20%5Cpsi_t%20+%20v_t%20/%20L_f%20%5Cdelta_t%20dt%20%5C%5C%20cte_%7Bt+1%7D%20%26%3D%20f%28x_t%29%20-%20y_t%20+%20v%20sin%28e%5Cpsi_t%29dt%5C%5C%20e%5Cpsi_%7Bt+1%7D%26%3D%20%5Cpsi_t%20-%20%5Cpsi%20des_t%20+%20v_t%20/%20L_f%20%5Cdelta_t%20dt%20%5Cend%7Balign*%7D)
+
+Here <img src="/tex/23776aad854f2d33e83e4f4cad44e1b9.svg?invert_in_darkmode&sanitize=true" align=middle width=14.360779949999989pt height=14.15524440000002pt/> is the 
+
+
+
 ## Dependencies
 
 * cmake >= 3.5
