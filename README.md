@@ -14,8 +14,8 @@ The goal of the project is to model a self-driving using a Model Predictive Cont
 ### Vehicle Model
 
 The model used for the vehicle is the kinematic bicycle model. This model takes into account the dynamics of the system, like velocity, heading and ignores other factors like friction, mass and various forces. The following set of equations describe the state of a vehicle at any given time:
-<p align="center"><img src="/tex/3c5b1dd83dbc69526c39eea5480cfef0.svg?invert_in_darkmode&sanitize=true" align=middle width=1002.0649831499999pt height=34.177354199999996pt/></p>
-Here <img src="/tex/c47305a36647762ef14f697f4092fca2.svg?invert_in_darkmode&sanitize=true" align=middle width=145.62993719999997pt height=22.831056599999986pt/> represents the current state of the vehicle at time <img src="/tex/4f4f4e395762a3af4575de74c019ebb5.svg?invert_in_darkmode&sanitize=true" align=middle width=5.936097749999991pt height=20.221802699999984pt/>. <img src="/tex/1c2c8c7d47260addae719b977f037491.svg?invert_in_darkmode&sanitize=true" align=middle width=25.66983209999999pt height=20.221802699999984pt/> is the cross-track error, the distance of the vehicle's center from the trajectory. <img src="/tex/ad2e92cff6ef93ef8b058b56577f32f0.svg?invert_in_darkmode&sanitize=true" align=middle width=23.327742899999986pt height=22.831056599999986pt/> is the difference in the heading and desired heading <img src="/tex/a57b5ff01a8873c4f692ef7a73c96c45.svg?invert_in_darkmode&sanitize=true" align=middle width=40.17896189999999pt height=22.831056599999986pt/>. The above set of equations will estimate the state of vehicle at time <img src="/tex/628783099380408a32610228991619a8.svg?invert_in_darkmode&sanitize=true" align=middle width=34.24649744999999pt height=21.18721440000001pt/>.  Also, <img src="/tex/a37302359718eac43a8aec1b5310a2be.svg?invert_in_darkmode&sanitize=true" align=middle width=18.88710944999999pt height=22.465723500000017pt/> is a constant that represents the distance between the center of mass of the vehicle and it's front wheels. Without, the above model is only true for a point particle, which is not a realistic reflection of our vehicle. <img src="/tex/a37302359718eac43a8aec1b5310a2be.svg?invert_in_darkmode&sanitize=true" align=middle width=18.88710944999999pt height=22.465723500000017pt/> is defined in the code at [TODO]
+<p align="center"><img src="https://rawgit.com/mpdivecha/MPC-Project/readme/svgs/3c5b1dd83dbc69526c39eea5480cfef0.svg?invert_in_darkmode" align=middle width=999.6162pt height=34.142625pt/></p>
+Here <img src="https://rawgit.com/mpdivecha/MPC-Project/readme/svgs/c47305a36647762ef14f697f4092fca2.svg?invert_in_darkmode" align=middle width=145.24521pt height=22.74591pt/> represents the current state of the vehicle at time <img src="https://rawgit.com/mpdivecha/MPC-Project/readme/svgs/4f4f4e395762a3af4575de74c019ebb5.svg?invert_in_darkmode" align=middle width=5.913963pt height=20.1465pt/>. <img src="https://rawgit.com/mpdivecha/MPC-Project/readme/svgs/1c2c8c7d47260addae719b977f037491.svg?invert_in_darkmode" align=middle width=25.57401pt height=20.1465pt/> is the cross-track error, the distance of the vehicle's center from the trajectory. <img src="https://rawgit.com/mpdivecha/MPC-Project/readme/svgs/ad2e92cff6ef93ef8b058b56577f32f0.svg?invert_in_darkmode" align=middle width=23.24058pt height=22.74591pt/> is the difference in the heading and desired heading <img src="https://rawgit.com/mpdivecha/MPC-Project/readme/svgs/a57b5ff01a8873c4f692ef7a73c96c45.svg?invert_in_darkmode" align=middle width=40.031145pt height=22.74591pt/>. The above set of equations will estimate the state of vehicle at time <img src="https://rawgit.com/mpdivecha/MPC-Project/readme/svgs/628783099380408a32610228991619a8.svg?invert_in_darkmode" align=middle width=34.145925pt height=21.10812pt/>.  Also, <img src="https://rawgit.com/mpdivecha/MPC-Project/readme/svgs/a37302359718eac43a8aec1b5310a2be.svg?invert_in_darkmode" align=middle width=18.8166pt height=22.38192pt/> is a constant that represents the distance between the center of mass of the vehicle and it's front wheels. Without, the above model is only true for a point particle, which is not a realistic reflection of our vehicle. <img src="https://rawgit.com/mpdivecha/MPC-Project/readme/svgs/a37302359718eac43a8aec1b5310a2be.svg?invert_in_darkmode" align=middle width=18.8166pt height=22.38192pt/> is defined in the code at [TODO]
 
 [TODO: Also mention actuators delta and a]
 
@@ -26,7 +26,7 @@ Once we have the kinematic model of our vehicle, we can use MPC to estimate our 
 The optimal control problem referred above is a nonlinear optimization problem that tries to minimize a certain cost given certain constraints. 
 
 The cost in our case is given by:
-<p align="center"><img src="/tex/4d8813b1fc0e32391b0fe318b35db4e5.svg?invert_in_darkmode&sanitize=true" align=middle width=737.7529912499999pt height=47.60747145pt/></p>
+<p align="center"><img src="https://rawgit.com/mpdivecha/MPC-Project/readme/svgs/4d8813b1fc0e32391b0fe318b35db4e5.svg?invert_in_darkmode" align=middle width=736.09635pt height=47.57808pt/></p>
 
 The code for the costs is at [TODO: MPC.cpp lines for cost ]
 
@@ -35,7 +35,7 @@ The code for the costs is at [TODO: MPC.cpp lines for cost ]
 [TODO: Add weights to the above equation]
 
 The constraints in our case are given by:
-<p align="center"><img src="/tex/a09b75ad29766a07b0d3e951ce0d3a12.svg?invert_in_darkmode&sanitize=true" align=middle width=179.67646455pt height=16.438356pt/></p>
+<p align="center"><img src="https://rawgit.com/mpdivecha/MPC-Project/readme/svgs/a09b75ad29766a07b0d3e951ce0d3a12.svg?invert_in_darkmode" align=middle width=179.15205pt height=16.376943pt/></p>
 The code for these constraints is at [TODO: MPC.cpp lines for constraints ]
 
 #### Reference frame
@@ -44,7 +44,7 @@ The computations for the model are done in the reference frame of the vehicle. S
 
 #### Trajectory representation
 
-The trajectory in our case consists of waypoints that are pre-defined along the route of travel. These waypoints are represented by a third degree polynomial <img src="/tex/d53011c4c7824fee58ecd4cecbff13ee.svg?invert_in_darkmode&sanitize=true" align=middle width=46.406078399999984pt height=24.65753399999998pt/>. It is computed in the code at [TODO: main.cpp polyfit call]
+The trajectory in our case consists of waypoints that are pre-defined along the route of travel. These waypoints are represented by a third degree polynomial <img src="https://rawgit.com/mpdivecha/MPC-Project/readme/svgs/d53011c4c7824fee58ecd4cecbff13ee.svg?invert_in_darkmode" align=middle width=46.24521pt height=24.56553pt/>. It is computed in the code at [TODO: main.cpp polyfit call]
 
 #### Latency
 
