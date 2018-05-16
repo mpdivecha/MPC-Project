@@ -13,13 +13,42 @@ The goal of the project is to model a self-driving using a Model Predictive Cont
 
 ### Vehicle Model
 
-The model used for the vehicle is the kinematic bicycle model. This model takes into account the dynamics of the system, like velocity, heading and ignores other factors like friction, mass and other forces. The following set of equations describe the state of a vehicle any given time:
+The model used for the vehicle is the kinematic bicycle model. This model takes into account the dynamics of the system, like velocity, heading and ignores other factors like friction, mass and various forces. The following set of equations describe the state of a vehicle at any given time:
+<p align="center"><img src="/tex/3c5b1dd83dbc69526c39eea5480cfef0.svg?invert_in_darkmode&sanitize=true" align=middle width=1002.0649831499999pt height=34.177354199999996pt/></p>
+Here <img src="/tex/c47305a36647762ef14f697f4092fca2.svg?invert_in_darkmode&sanitize=true" align=middle width=145.62993719999997pt height=22.831056599999986pt/> represents the current state of the vehicle at time <img src="/tex/4f4f4e395762a3af4575de74c019ebb5.svg?invert_in_darkmode&sanitize=true" align=middle width=5.936097749999991pt height=20.221802699999984pt/>. <img src="/tex/1c2c8c7d47260addae719b977f037491.svg?invert_in_darkmode&sanitize=true" align=middle width=25.66983209999999pt height=20.221802699999984pt/> is the cross-track error, the distance of the vehicle's center from the trajectory. <img src="/tex/ad2e92cff6ef93ef8b058b56577f32f0.svg?invert_in_darkmode&sanitize=true" align=middle width=23.327742899999986pt height=22.831056599999986pt/> is the difference in the heading and desired heading <img src="/tex/a57b5ff01a8873c4f692ef7a73c96c45.svg?invert_in_darkmode&sanitize=true" align=middle width=40.17896189999999pt height=22.831056599999986pt/>. The above set of equations will estimate the state of vehicle at time <img src="/tex/628783099380408a32610228991619a8.svg?invert_in_darkmode&sanitize=true" align=middle width=34.24649744999999pt height=21.18721440000001pt/>.  Also, <img src="/tex/a37302359718eac43a8aec1b5310a2be.svg?invert_in_darkmode&sanitize=true" align=middle width=18.88710944999999pt height=22.465723500000017pt/> is a constant that represents the distance between the center of mass of the vehicle and it's front wheels. Without, the above model is only true for a point particle, which is not a realistic reflection of our vehicle. <img src="/tex/a37302359718eac43a8aec1b5310a2be.svg?invert_in_darkmode&sanitize=true" align=middle width=18.88710944999999pt height=22.465723500000017pt/> is defined in the code at [TODO]
 
-![Equations](https://latex.codecogs.com/svg.latex?%5Cinline%20%5Cbegin%7Balign*%7D%20x_%7Bt+1%7D%20%26%3D%20x_t%20+%20v_t%20cos%28%5Cpsi_t%29dt%5C%5C%20y_%7Bt+1%7D%20%26%3D%20y_t%20+%20v_t%20sin%28%5Cpsi_t%29dt%5C%5C%20%5Cpsi_%7Bt+1%7D%20%26%3D%20%5Cpsi_t%20+%20v_t%20/%20L_f%20%5Cdelta_t%20dt%20%5C%5C%20cte_%7Bt+1%7D%20%26%3D%20f%28x_t%29%20-%20y_t%20+%20v%20sin%28e%5Cpsi_t%29dt%5C%5C%20e%5Cpsi_%7Bt+1%7D%26%3D%20%5Cpsi_t%20-%20%5Cpsi%20des_t%20+%20v_t%20/%20L_f%20%5Cdelta_t%20dt%20%5Cend%7Balign*%7D)
+[TODO: Also mention actuators delta and a]
 
-Here <img src="/tex/23776aad854f2d33e83e4f4cad44e1b9.svg?invert_in_darkmode&sanitize=true" align=middle width=14.360779949999989pt height=14.15524440000002pt/> is the 
+### Model Predictive Control
 
+Once we have the kinematic model of our vehicle, we can use MPC to estimate our future trajectory. In MPC, an optimal control problem is "solved" for a certain number of steps, called the horizon, based on certain frequency. The horizon and frequency are represented in the code by variables `N` and `dt` in file [TODO] . 
 
+The optimal control problem referred above is a nonlinear optimization problem that tries to minimize a certain cost given certain constraints. 
+
+The cost in our case is given by:
+<p align="center"><img src="/tex/4d8813b1fc0e32391b0fe318b35db4e5.svg?invert_in_darkmode&sanitize=true" align=middle width=737.7529912499999pt height=47.60747145pt/></p>
+
+The code for the costs is at [TODO: MPC.cpp lines for cost ]
+
+[TODO: Explain the above variables here]
+
+[TODO: Add weights to the above equation]
+
+The constraints in our case are given by:
+<p align="center"><img src="/tex/a09b75ad29766a07b0d3e951ce0d3a12.svg?invert_in_darkmode&sanitize=true" align=middle width=179.67646455pt height=16.438356pt/></p>
+The code for these constraints is at [TODO: MPC.cpp lines for constraints ]
+
+#### Reference frame
+
+The computations for the model are done in the reference frame of the vehicle. Since the waypoints are received in global coordinates, they are converted into vehicle coordinates at [TODO: main.cpp transform lines]
+
+#### Trajectory representation
+
+The trajectory in our case consists of waypoints that are pre-defined along the route of travel. These waypoints are represented by a third degree polynomial <img src="/tex/d53011c4c7824fee58ecd4cecbff13ee.svg?invert_in_darkmode&sanitize=true" align=middle width=46.406078399999984pt height=24.65753399999998pt/>. It is computed in the code at [TODO: main.cpp polyfit call]
+
+#### Latency
+
+The simulation adds a latency of about 100ms. This is to simulate the delay between actuation and effect. We need to account for this latency properly otherwise the computed and reference trajectories will keep diverging. The code for this is at [TODO: main.cpp lines for updated state equations]
 
 ## Dependencies
 
