@@ -5,11 +5,11 @@ Self-Driving Car Engineer Nanodegree Program
 
 ## Project Goal
 
-The goal of the project is to model a self-driving using a Model Predictive Controller. The model is tested on a simulated car in the Udacity simulator. The following are expectations of the project:
+The goal of the project is to model a self-driving using a Model Predictive Controller. The model is tested on a simulated car in the Udacity simulator. The following are the expectations of the project:
 
 - The car should stay within the lane and not veer too far off the center.
 - The car should drive smoothly minimizing any jerky movements.
-- Should drive at or below the desired speed.
+- The car should drive at or below the desired speed.
 
 ### Vehicle Model
 
@@ -26,9 +26,8 @@ e\psi_{t+1} &= \psi_t - \psi des_t + \frac{v_t}{L_f} \delta_t dt
 \end{align}
 $$
 
-Here $x_t, y_t, \psi_t, v_t, cte_t, e\psi_t$ represents the current state of the vehicle at time $t$. $cte_t$ is the cross-track error, the distance of the vehicle's center from the trajectory. $e\psi_t$ is the difference in the heading and desired heading $\psi des_t$. The above set of equations will estimate the state of vehicle at time $t+1$.  Also, $L_f$ is a constant that represents the distance between the center of mass of the vehicle and it's front wheels. Without, the above model is only true for a point particle, which is not a realistic reflection of our vehicle. $L_f$ is defined in the code at [TODO]
-
-[TODO: Also mention actuators delta and a]
+Here $x_t, y_t, \psi_t, v_t, cte_t, e\psi_t$ represents the current state of the vehicle at time $t$. $cte_t$ is the cross-track error, the distance of the vehicle's center from the trajectory. $e\psi_t$ is the difference in the heading and desired heading $\psi des_t$. The above set of equations will estimate the state of vehicle at time $t+1$.  Also, $L_f$ is a constant that represents the distance between the center of mass of the vehicle and it's front wheels. Without it, the above model is only true for a point particle, which is not a realistic reflection of our vehicle. $L_f$ is defined in the code at [TODO]
+Futhermore, $\delta_t$ and $a_t$ represent the actuators of the system. $\delta_t$ is the change in heading, which can be assumed as the amount of steering to apply. $a_t$ is the acceleration and is used as an approximation of the throttle to be applied.
 
 ### Model Predictive Control
 
@@ -39,9 +38,9 @@ The optimal control problem referred above is a nonlinear optimization problem t
 The cost in our case is given by:
 $$
 \begin{align}
-J = &\sum_{t=1}^N[ (cte_t - cte_{ref})^2 + (e\psi_t - e\psi_{ref})^2 +  (v_t - v_{ref}) ^2] +\\
- &\sum_{t=1}^{N-1}[ \delta_t^2 + a_t^2 + (\kappa \cdot v_t)^2] +\\ 
- &\sum_{t=1}^{N-2}[(\delta_{t+1} - \delta_t)^2 + (a_{t+1} - a_t)^2]
+J = &\sum_{t=1}^N[ w_{cte}(cte_t - cte_{ref})^2 + w_{e\psi}(e\psi_t - e\psi_{ref})^2 +  w_v(v_t - v_{ref}) ^2] +\\
+ &\sum_{t=1}^{N-1}[ w_{\delta} \delta_t^2 + w_a a_t^2 + w_{\kappa} (\kappa \cdot v_t)^2] +\\ 
+ &\sum_{t=1}^{N-2}[w_{\delta gap}(\delta_{t+1} - \delta_t)^2 + w_{a gap}(a_{t+1} - a_t)^2]
 \end{align}
 $$
 
