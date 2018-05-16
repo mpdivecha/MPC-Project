@@ -14,14 +14,18 @@ The goal of the project is to model a self-driving using a Model Predictive Cont
 ### Vehicle Model
 
 The model used for the vehicle is the kinematic bicycle model. This model takes into account the dynamics of the system, like velocity, heading and ignores other factors like friction, mass and various forces. The following set of equations describe the state of a vehicle at any given time:
+
 $$
-x_{t+1} = x_t + v_t cos(\psi_t) dt\\
-y_{t+1} = y_t = v_t sin(\psi_t) dt\\
-\psi_{t+1} = \psi_t + \frac{v_t}{L_f} \delta_t dt\\
-v_{t+1} = v_t + a_t dt\\
-cte_{t+1} = f(x_t) - y_t + v_t sin(e\psi_t) dt\\
-e\psi_{t+1} = \psi_t - \psi des_t + \frac{v_t}{L_f} \delta_t dt
+\begin{align}
+x_{t+1} &= x_t + v_t cos(\psi_t) dt \\
+y_{t+1} &= y_t = v_t sin(\psi_t) dt \\
+\psi_{t+1} &= \psi_t + \frac{v_t}{L_f} \delta_t dt \\
+v_{t+1} &= v_t + a_t dt \\
+cte_{t+1} &= f(x_t) - y_t + v_t sin(e\psi_t) dt \\
+e\psi_{t+1} &= \psi_t - \psi des_t + \frac{v_t}{L_f} \delta_t dt
+\end{align}
 $$
+
 Here $x_t, y_t, \psi_t, v_t, cte_t, e\psi_t$ represents the current state of the vehicle at time $t$. $cte_t$ is the cross-track error, the distance of the vehicle's center from the trajectory. $e\psi_t$ is the difference in the heading and desired heading $\psi des_t$. The above set of equations will estimate the state of vehicle at time $t+1$.  Also, $L_f$ is a constant that represents the distance between the center of mass of the vehicle and it's front wheels. Without, the above model is only true for a point particle, which is not a realistic reflection of our vehicle. $L_f$ is defined in the code at [TODO]
 
 [TODO: Also mention actuators delta and a]
@@ -34,7 +38,11 @@ The optimal control problem referred above is a nonlinear optimization problem t
 
 The cost in our case is given by:
 $$
-J = \sum_{t=1}^N[ (cte_t - cte_{ref})^2 + (e\psi_t - e\psi_{ref})^2 +  (v_t - v_{ref}) ^2] +\sum_{t=1}^{N-1}[ \delta_t^2 + a_t^2 + (\kappa \cdot v_t)^2] + \sum_{t=1}^{N-2}[(\delta_{t+1} - \delta_t)^2 + (a_{t+1} - a_t)^2]
+\begin{align}
+J = &\sum_{t=1}^N[ (cte_t - cte_{ref})^2 + (e\psi_t - e\psi_{ref})^2 +  (v_t - v_{ref}) ^2] +\\
+ &\sum_{t=1}^{N-1}[ \delta_t^2 + a_t^2 + (\kappa \cdot v_t)^2] +\\ 
+ &\sum_{t=1}^{N-2}[(\delta_{t+1} - \delta_t)^2 + (a_{t+1} - a_t)^2]
+\end{align}
 $$
 
 The code for the costs is at [TODO: MPC.cpp lines for cost ]
@@ -44,10 +52,14 @@ The code for the costs is at [TODO: MPC.cpp lines for cost ]
 [TODO: Add weights to the above equation]
 
 The constraints in our case are given by:
+
 $$
-\delta \in [-25^{\circ}, 25^{\circ}] \\
-a \in [-1, 1]
+\begin{align}
+\delta &\in [-25^{\circ}, 25^{\circ}] \\
+a &\in [-1, 1]
+\end{align}
 $$
+
 The code for these constraints is at [TODO: MPC.cpp lines for constraints ]
 
 #### Reference frame
