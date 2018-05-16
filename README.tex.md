@@ -13,13 +13,54 @@ The goal of the project is to model a self-driving using a Model Predictive Cont
 
 ### Vehicle Model
 
-The model used for the vehicle is the kinematic bicycle model. This model takes into account the dynamics of the system, like velocity, heading and ignores other factors like friction, mass and other forces. The following set of equations describe the state of a vehicle any given time:
+The model used for the vehicle is the kinematic bicycle model. This model takes into account the dynamics of the system, like velocity, heading and ignores other factors like friction, mass and various forces. The following set of equations describe the state of a vehicle at any given time:
+$$
+x_{t+1} = x_t + v_t cos(\psi_t) dt\\
+y_{t+1} = y_t = v_t sin(\psi_t) dt\\
+\psi_{t+1} = \psi_t + \frac{v_t}{L_f} \delta_t dt\\
+v_{t+1} = v_t + a_t dt\\
+cte_{t+1} = f(x_t) - y_t + v_t sin(e\psi_t) dt\\
+e\psi_{t+1} = \psi_t - \psi des_t + \frac{v_t}{L_f} \delta_t dt
+$$
+Here $x_t, y_t, \psi_t, v_t, cte_t, e\psi_t$ represents the current state of the vehicle at time $t$. $cte_t$ is the cross-track error, the distance of the vehicle's center from the trajectory. $e\psi_t$ is the difference in the heading and desired heading $\psi des_t$. The above set of equations will estimate the state of vehicle at time $t+1$.  Also, $L_f$ is a constant that represents the distance between the center of mass of the vehicle and it's front wheels. Without, the above model is only true for a point particle, which is not a realistic reflection of our vehicle. $L_f$ is defined in the code at [TODO]
 
-![Equations](https://latex.codecogs.com/svg.latex?%5Cinline%20%5Cbegin%7Balign*%7D%20x_%7Bt+1%7D%20%26%3D%20x_t%20+%20v_t%20cos%28%5Cpsi_t%29dt%5C%5C%20y_%7Bt+1%7D%20%26%3D%20y_t%20+%20v_t%20sin%28%5Cpsi_t%29dt%5C%5C%20%5Cpsi_%7Bt+1%7D%20%26%3D%20%5Cpsi_t%20+%20v_t%20/%20L_f%20%5Cdelta_t%20dt%20%5C%5C%20cte_%7Bt+1%7D%20%26%3D%20f%28x_t%29%20-%20y_t%20+%20v%20sin%28e%5Cpsi_t%29dt%5C%5C%20e%5Cpsi_%7Bt+1%7D%26%3D%20%5Cpsi_t%20-%20%5Cpsi%20des_t%20+%20v_t%20/%20L_f%20%5Cdelta_t%20dt%20%5Cend%7Balign*%7D)
+[TODO: Also mention actuators delta and a]
 
-Here $x_t$ is the 
+### Model Predictive Control
 
+Once we have the kinematic model of our vehicle, we can use MPC to estimate our future trajectory. In MPC, an optimal control problem is "solved" for a certain number of steps, called the horizon, based on certain frequency. The horizon and frequency are represented in the code by variables `N` and `dt` in file [TODO] . 
 
+The optimal control problem referred above is a nonlinear optimization problem that tries to minimize a certain cost given certain constraints. 
+
+The cost in our case is given by:
+$$
+J = \sum_{t=1}^N[ (cte_t - cte_{ref})^2 + (e\psi_t - e\psi_{ref})^2 +  (v_t - v_{ref}) ^2] +\sum_{t=1}^{N-1}[ \delta_t^2 + a_t^2 + (\kappa \cdot v_t)^2] + \sum_{t=1}^{N-2}[(\delta_{t+1} - \delta_t)^2 + (a_{t+1} - a_t)^2]
+$$
+
+The code for the costs is at [TODO: MPC.cpp lines for cost ]
+
+[TODO: Explain the above variables here]
+
+[TODO: Add weights to the above equation]
+
+The constraints in our case are given by:
+$$
+\delta \in [-25^{\circ}, 25^{\circ}] \\
+a \in [-1, 1]
+$$
+The code for these constraints is at [TODO: MPC.cpp lines for constraints ]
+
+#### Reference frame
+
+The computations for the model are done in the reference frame of the vehicle. Since the waypoints are received in global coordinates, they are converted into vehicle coordinates at [TODO: main.cpp transform lines]
+
+#### Trajectory representation
+
+The trajectory in our case consists of waypoints that are pre-defined along the route of travel. These waypoints are represented by a third degree polynomial $p(x,y)$. It is computed in the code at [TODO: main.cpp polyfit call]
+
+#### Latency
+
+The simulation adds a latency of about 100ms. This is to simulate the delay between actuation and effect. We need to account for this latency properly otherwise the computed and reference trajectories will keep diverging. The code for this is at [TODO: main.cpp lines for updated state equations]
 
 ## Dependencies
 
