@@ -70,12 +70,12 @@ int main() {
 
   // MPC is initialized here!
   vector<double> cost_multipliers;
-  cost_multipliers.push_back(10);     // CTE cost
-  cost_multipliers.push_back(400);     // Epsi cost 
+  cost_multipliers.push_back(5);        // CTE cost
+  cost_multipliers.push_back(400);      // Epsi cost 
   cost_multipliers.push_back(1);        // v cost
-  cost_multipliers.push_back(70);        // delta actuator use cost
-  cost_multipliers.push_back(10);        // a actuator use cost
-  cost_multipliers.push_back(70);       // delta actuator gap cost
+  cost_multipliers.push_back(10);       // delta actuator use cost
+  cost_multipliers.push_back(10);       // a actuator use cost
+  cost_multipliers.push_back(10);       // delta actuator gap cost
   cost_multipliers.push_back(10);       // a actuator gap cost
   MPC mpc(cost_multipliers);
 
@@ -99,7 +99,7 @@ int main() {
           double py = j[1]["y"];
           double psi = j[1]["psi"];
           double v = j[1]["speed"];
-          v *= 0.44704;
+          v *= 0.44704;         // Convert to meters per second from mph
           double steer_value = j[1]["steering_angle"];
           double throttle_value = j[1]["throttle"];
 
@@ -108,7 +108,7 @@ int main() {
               // shift car reference by 90 degrees
               double shift_x = ptsx[i] - px;
               double shift_y = ptsy[i] - py;
-
+              // Coordinate transform to vehicle coordinates
               ptsx[i] = (shift_x*cos(-psi) - shift_y*sin(-psi));
               ptsy[i] = (shift_x*sin(-psi) + shift_y*cos(-psi));
           }
@@ -122,15 +122,15 @@ int main() {
           double epsi = -atan(coeffs[1]);
 
           // Here we generate the current state predictions
-          int latency = 0.06;
+          int latency = 0.1;
           double Lf = 2.67;
 
-          double state_psi = 0 + v/Lf * (steer_value) * latency;
+          double state_psi = 0;// + v/Lf * (steer_value) * latency;
           double state_v = v + throttle_value*latency;
-          double state_x = 0 + v*cos(0)*latency;
+          double state_x = 0;// + v*cos(0)*latency;
           double state_y = 0;// + v*sin(state_psi)*latency;
-          double state_epsi = epsi - v/Lf * steer_value * latency; // - atan(coeffs[1]); 
-          double state_cte = cte + v*sin(epsi)*latency;
+          double state_epsi = epsi;// - v/Lf * steer_value * latency; // - atan(coeffs[1]); 
+          double state_cte = cte;// + v*sin(epsi)*latency;
 
           Eigen::VectorXd state(6);
           state << state_x, state_y, state_psi, state_v, state_cte, state_epsi;
@@ -150,8 +150,6 @@ int main() {
           steer_value = vars[0]/(deg2rad(25)*Lf);
           if (steer_value > 1) steer_value = 1;
           else if(steer_value < -1) steer_value = -1;
-          //std::cout << "steer_value_before: " << vars[0]/(deg2rad(25)*1);
-          //std::cout << " vars0: " << vars[0] << " steer_value_after: " << steer_value << std::endl;
 
           throttle_value = vars[1];
           if (throttle_value > 1) throttle_value = 1;
@@ -216,7 +214,7 @@ int main() {
           //
           // NOTE: REMEMBER TO SET THIS TO 100 MILLISECONDS BEFORE
           // SUBMITTING.
-          //this_thread::sleep_for(chrono::milliseconds(100));
+          this_thread::sleep_for(chrono::milliseconds(100));
           ws.send(msg.data(), msg.length(), uWS::OpCode::TEXT);
         }
       } else {
