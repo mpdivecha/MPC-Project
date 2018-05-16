@@ -5,11 +5,11 @@ Self-Driving Car Engineer Nanodegree Program
 
 ## Project Goal
 
-The goal of the project is to model a self-driving using a Model Predictive Controller. The model is tested on a simulated car in the Udacity simulator. The following are expectations of the project:
+The goal of the project is to model a self-driving using a Model Predictive Controller. The model is tested on a simulated car in the Udacity simulator. The following are the expectations of the project:
 
 - The car should stay within the lane and not veer too far off the center.
 - The car should drive smoothly minimizing any jerky movements.
-- Should drive at or below the desired speed.
+- The car should drive at or below the desired speed.
 
 ### Vehicle Model
 
@@ -17,9 +17,8 @@ The model used for the vehicle is the kinematic bicycle model. This model takes 
 
 <p align="center"><img src="svgs/61e4158173dc6895470988dbecf2b63d.svg?invert_in_darkmode&sanitize=true" align=middle width=244.71315pt height=175.31415pt/></p>
 
-Here <img src="svgs/c47305a36647762ef14f697f4092fca2.svg?invert_in_darkmode&sanitize=true" align=middle width=145.24521pt height=22.74591pt/> represents the current state of the vehicle at time <img src="svgs/4f4f4e395762a3af4575de74c019ebb5.svg?invert_in_darkmode&sanitize=true" align=middle width=5.913963pt height=20.1465pt/>. <img src="svgs/1c2c8c7d47260addae719b977f037491.svg?invert_in_darkmode&sanitize=true" align=middle width=25.57401pt height=20.1465pt/> is the cross-track error, the distance of the vehicle's center from the trajectory. <img src="svgs/ad2e92cff6ef93ef8b058b56577f32f0.svg?invert_in_darkmode&sanitize=true" align=middle width=23.24058pt height=22.74591pt/> is the difference in the heading and desired heading <img src="svgs/a57b5ff01a8873c4f692ef7a73c96c45.svg?invert_in_darkmode&sanitize=true" align=middle width=40.031145pt height=22.74591pt/>. The above set of equations will estimate the state of vehicle at time <img src="svgs/628783099380408a32610228991619a8.svg?invert_in_darkmode&sanitize=true" align=middle width=34.145925pt height=21.10812pt/>.  Also, <img src="svgs/a37302359718eac43a8aec1b5310a2be.svg?invert_in_darkmode&sanitize=true" align=middle width=18.8166pt height=22.38192pt/> is a constant that represents the distance between the center of mass of the vehicle and it's front wheels. Without, the above model is only true for a point particle, which is not a realistic reflection of our vehicle. <img src="svgs/a37302359718eac43a8aec1b5310a2be.svg?invert_in_darkmode&sanitize=true" align=middle width=18.8166pt height=22.38192pt/> is defined in the code at [TODO]
-
-[TODO: Also mention actuators delta and a]
+Here <img src="svgs/c47305a36647762ef14f697f4092fca2.svg?invert_in_darkmode&sanitize=true" align=middle width=145.24521pt height=22.74591pt/> represents the current state of the vehicle at time <img src="svgs/4f4f4e395762a3af4575de74c019ebb5.svg?invert_in_darkmode&sanitize=true" align=middle width=5.913963pt height=20.1465pt/>. <img src="svgs/1c2c8c7d47260addae719b977f037491.svg?invert_in_darkmode&sanitize=true" align=middle width=25.57401pt height=20.1465pt/> is the cross-track error, the distance of the vehicle's center from the trajectory. <img src="svgs/ad2e92cff6ef93ef8b058b56577f32f0.svg?invert_in_darkmode&sanitize=true" align=middle width=23.24058pt height=22.74591pt/> is the difference in the heading and desired heading <img src="svgs/a57b5ff01a8873c4f692ef7a73c96c45.svg?invert_in_darkmode&sanitize=true" align=middle width=40.031145pt height=22.74591pt/>. The above set of equations will estimate the state of vehicle at time <img src="svgs/628783099380408a32610228991619a8.svg?invert_in_darkmode&sanitize=true" align=middle width=34.145925pt height=21.10812pt/>.  Also, <img src="svgs/a37302359718eac43a8aec1b5310a2be.svg?invert_in_darkmode&sanitize=true" align=middle width=18.8166pt height=22.38192pt/> is a constant that represents the distance between the center of mass of the vehicle and it's front wheels. Without it, the above model is only true for a point particle, which is not a realistic reflection of our vehicle. <img src="svgs/a37302359718eac43a8aec1b5310a2be.svg?invert_in_darkmode&sanitize=true" align=middle width=18.8166pt height=22.38192pt/> is defined in the code at [TODO]
+Futhermore, <img src="svgs/10ea9eec57d7dd8109d5e58e9baf6620.svg?invert_in_darkmode&sanitize=true" align=middle width=12.226005pt height=22.74591pt/> and <img src="svgs/9789555e5d8fa5de21171cc40c86d2cd.svg?invert_in_darkmode&sanitize=true" align=middle width=13.60392pt height=14.10255pt/> represent the actuators of the system. <img src="svgs/10ea9eec57d7dd8109d5e58e9baf6620.svg?invert_in_darkmode&sanitize=true" align=middle width=12.226005pt height=22.74591pt/> is the change in heading, which can be assumed as the amount of steering to apply. <img src="svgs/9789555e5d8fa5de21171cc40c86d2cd.svg?invert_in_darkmode&sanitize=true" align=middle width=13.60392pt height=14.10255pt/> is the acceleration and is used as an approximation of the throttle to be applied.
 
 ### Model Predictive Control
 
@@ -28,7 +27,7 @@ Once we have the kinematic model of our vehicle, we can use MPC to estimate our 
 The optimal control problem referred above is a nonlinear optimization problem that tries to minimize a certain cost given certain constraints. 
 
 The cost in our case is given by:
-<p align="center"><img src="svgs/a5e67bd70ced27767aa62f80d839ef02.svg?invert_in_darkmode&sanitize=true" align=middle width=411.6486pt height=162.51906pt/></p>
+<p align="center"><img src="svgs/76999a1fb9f84ea2d11a73514a63238d.svg?invert_in_darkmode&sanitize=true" align=middle width=488.70195pt height=162.51906pt/></p>
 
 The code for the costs is at [TODO: MPC.cpp lines for cost ]
 
