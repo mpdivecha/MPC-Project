@@ -65,17 +65,24 @@ Eigen::VectorXd polyfit(Eigen::VectorXd xvals, Eigen::VectorXd yvals,
   return result;
 }
 
+const std::string red("\033[0;31m");
+const std::string green("\033[1;32m");
+const std::string yellow("\033[1;33m");
+const std::string cyan("\033[0;36m");
+const std::string magenta("\033[0;35m");
+const std::string reset("\033[0m");
+
 int main() {
   uWS::Hub h;
 
   // MPC is initialized here!
   vector<double> cost_multipliers;
-  cost_multipliers.push_back(10);     // CTE cost
+  cost_multipliers.push_back(5);     // CTE cost
   cost_multipliers.push_back(400);     // Epsi cost 
   cost_multipliers.push_back(1);        // v cost
-  cost_multipliers.push_back(8);        // delta actuator use cost
+  cost_multipliers.push_back(5);        // delta actuator use cost
   cost_multipliers.push_back(10);        // a actuator use cost
-  cost_multipliers.push_back(10);       // delta actuator gap cost
+  cost_multipliers.push_back(5);       // delta actuator gap cost
   cost_multipliers.push_back(10);       // a actuator gap cost
   MPC mpc(cost_multipliers);
 
@@ -160,10 +167,11 @@ int main() {
           msgJson["steering_angle"] = steer_value;
           msgJson["throttle"] = throttle_value;
 
+          if (abs(state_cte) > 1) cout << red;
           cout << "steer: " << steer_value << " throttle: " << throttle_value;
           cout << " cte: " << state_cte << " epsi: " << epsi;
           double curvature = coeffs[3]*coeffs[3]*10000;
-          cout << " curvature: " << curvature << " cxv: " << pow(coeffs[3]*100*state_v,2 ) << endl;
+          cout << " curvature: " << curvature << " cxv: " << pow(coeffs[3]*100*state_v,2 ) << endl << reset;
 
           //Display the MPC predicted trajectory 
           vector<double> mpc_x_vals;
