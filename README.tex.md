@@ -26,12 +26,13 @@ e\psi_{t+1} &= \psi_t - \psi des_t + \frac{v_t}{L_f} \delta_t dt
 \end{align}
 $$
 
-Here $x_t, y_t, \psi_t, v_t, cte_t, e\psi_t$ represents the current state of the vehicle at time $t$. $cte_t$ is the cross-track error, the distance of the vehicle's center from the trajectory. $e\psi_t$ is the difference in the heading and desired heading $\psi des_t$. The above set of equations will estimate the state of vehicle at time $t+1$.  Also, $L_f$ is a constant that represents the distance between the center of mass of the vehicle and it's front wheels. Without it, the above model is only true for a point particle, which is not a realistic reflection of our vehicle. $L_f$ is defined in the code at [TODO]
-Futhermore, $\delta_t$ and $a_t$ represent the actuators of the system. $\delta_t$ is the change in heading, which can be assumed as the amount of steering to apply. $a_t$ is the acceleration and is used as an approximation of the throttle to be applied.
+Here $x_t, y_t, \psi_t, v_t, cte_t, e\psi_t$ represents the current state of the vehicle at time $t$. $cte_t$ is the cross-track error, the distance of the vehicle's center from the trajectory. $e\psi_t$ is the difference in the heading and desired heading $\psi des_t$. The above set of equations will estimate the state of vehicle at time $t+1$.  Also, $L_f$ is a constant that represents the distance between the center of mass of the vehicle and it's front wheels. Without it, the above model is only true for a point particle, which is not a realistic reflection of our vehicle. $L_f$ is defined in the code [here](src/MPC.cpp#L22).
+
+Furthermore, $\delta_t$ and $a_t$ represent the actuators of the system. $\delta_t$ is the change in heading, which can be assumed as the amount of steering to apply. $a_t$ is the acceleration and is used as an approximation of the throttle to be applied.
 
 ### Model Predictive Control
 
-Once we have the kinematic model of our vehicle, we can use MPC to estimate our future trajectory. In MPC, an optimal control problem is "solved" for a certain number of steps, called the horizon, based on certain frequency. The horizon and frequency are represented in the code by variables `N` and `dt` in file [TODO] . 
+Once we have the kinematic model of our vehicle, we can use MPC to estimate our future trajectory. In MPC, an optimal control problem is "solved" for a certain number of steps, called the horizon, based on certain frequency. The horizon and frequency are represented in the code by variables `N` and `dt` in file [MPC.cpp](src/MPC.cpp#L9-10) . 
 
 The optimal control problem referred above is a nonlinear optimization problem that tries to minimize a certain cost given certain constraints. 
 
@@ -44,11 +45,9 @@ J = &\sum_{t=1}^N[ w_{cte}(cte_t - cte_{ref})^2 + w_{e\psi}(e\psi_t - e\psi_{ref
 \end{align}
 $$
 
-The code for the costs is at [TODO: MPC.cpp lines for cost ]
+The code for the costs is at [TODO: MPC.cpp lines for cost ](src/MPC.cpp#L58-86)
 
 [TODO: Explain the above variables here]
-
-[TODO: Add weights to the above equation]
 
 The constraints in our case are given by:
 
@@ -59,15 +58,15 @@ a &\in [-1, 1]
 \end{align}
 $$
 
-The code for these constraints is at [TODO: MPC.cpp lines for constraints ]
+The code for these constraints is at [TODO: MPC.cpp lines for constraints ](src/MPC.cpp#L191-212)
 
 #### Reference frame
 
-The computations for the model are done in the reference frame of the vehicle. Since the waypoints are received in global coordinates, they are converted into vehicle coordinates at [TODO: main.cpp transform lines]
+The computations for the model are done in the reference frame of the vehicle. Since the waypoints are received in global coordinates, they are converted into vehicle coordinates at [TODO: main.cpp transform lines](src/main.cpp#L106-114)
 
 #### Trajectory representation
 
-The trajectory in our case consists of waypoints that are pre-defined along the route of travel. These waypoints are represented by a third degree polynomial $p(x,y)$. It is computed in the code at [TODO: main.cpp polyfit call]
+The trajectory in our case consists of waypoints that are pre-defined along the route of travel. These waypoints are represented by a third degree polynomial $p(x,y)$. It is computed in the code at [TODO: main.cpp polyfit call](src/main.cpp#L119)
 
 #### Latency
 
