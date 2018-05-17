@@ -240,8 +240,8 @@ COIN_HAS_HSL_FALSE =
 COIN_HAS_HSL_TRUE = #
 COIN_HAS_LAPACK_FALSE = #
 COIN_HAS_LAPACK_TRUE = 
-COIN_HAS_LATEX_FALSE = 
-COIN_HAS_LATEX_TRUE = #
+COIN_HAS_LATEX_FALSE = #
+COIN_HAS_LATEX_TRUE = 
 COIN_HAS_MUMPS_FALSE = #
 COIN_HAS_MUMPS_TRUE = 
 COIN_HAS_PKGCONFIG_FALSE = 
@@ -404,7 +404,7 @@ coin_doxy_tagfiles =
 coin_doxy_tagname = doxydoc/ipopt_doxy.tag
 coin_doxy_usedot = NO
 coin_have_doxygen = no
-coin_have_latex = no
+coin_have_latex = yes
 datadir = ${prefix}/share
 exec_prefix = ${prefix}
 have_autoconf = 
@@ -515,7 +515,7 @@ addlibsdir = $(DESTDIR)$(datadir)/coin/doc/Ipopt
 DocFiles = README AUTHORS LICENSE 
 DocInstallDir = $(datadir)/coin/doc/$(PACKAGE_NAME)
 COIN_HAS_DOXYGEN = #TRUE
-COIN_HAS_LATEX = #TRUE
+COIN_HAS_LATEX = TRUE
 all: all-recursive
 
 .SUFFIXES:

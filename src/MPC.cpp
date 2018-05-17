@@ -6,8 +6,8 @@
 using CppAD::AD;
 
 // TODO: Set the timestep length and duration
-size_t N = 20;
-double dt = 0.05;
+size_t N = 11;
+double dt = 0.1;
 
 // This value assumes the model presented in the classroom is used.
 //
@@ -23,7 +23,7 @@ const double Lf = 2.67;
 
 // Both the reference cross track and orientation errors are 0.
 // The reference velocity is set to 40 mph
-double ref_v = 60 * 0.44704;
+double ref_v = 150;// * 0.44704;
 
 // The solver takes all the state variables and actuator
 // variables in a singular vector. Thus, we should establish when
@@ -58,8 +58,8 @@ class FG_eval {
     // The part of the cost based on the referebce state
     for (int t = 0; t < N; t++)
     {
-        //if (abs(vars[cte_start + t]) > 0.5)
-        //    fg[0] += 25*cost_multipliers[0]*CppAD::pow(vars[cte_start + t], 2);
+        //if (abs(vars[cte_start + t]) > 1.0)
+        //    fg[0] += 2*cost_multipliers[0]*CppAD::pow(vars[cte_start + t], 2);
         //else
             fg[0] += cost_multipliers[0]*CppAD::pow(vars[cte_start + t], 2);
         fg[0] += cost_multipliers[1]*CppAD::pow(vars[epsi_start + t], 2);
@@ -72,8 +72,8 @@ class FG_eval {
         fg[0] += cost_multipliers[3]*CppAD::pow(vars[delta_start + t], 2);
         fg[0] += cost_multipliers[4]*CppAD::pow(vars[a_start + t], 2);
         // Penalize use of large steering values at high speeds
-        fg[0] += 5*CppAD::pow(vars[delta_start + t] * vars[v_start + t], 2);
-        fg[0] += 30*CppAD::pow(coeffs[3]*100*vars[v_start + t],2);
+        //fg[0] += 5*CppAD::pow(vars[delta_start + t] * vars[v_start + t], 2);
+        fg[0] += 50*CppAD::pow(coeffs[3]*100*vars[v_start + t],2);
         //fg[0] += 1/(1 - CppAD::pow(vars[a_start + t], 2));
     }
 
@@ -117,9 +117,14 @@ class FG_eval {
         // Only consider the actuation at time t.
         AD<double> delta0 = vars[delta_start + t - 1];
         AD<double> a0 = vars[a_start + t - 1];
+        if (t > 2)
+        {
+            delta0 = vars[delta_start + t - 2];
+            a0 = vars[a_start + t - 2];
+        }
 
-        AD<double> f0 = coeffs[0] + coeffs[1]*x0 + coeffs[2]*CppAD::pow(x0,2) + coeffs[3]*CppAD::pow(x0,3);
-        AD<double> psides0 = CppAD::atan(3*coeffs[3]*CppAD::pow(x0,2) + 2*coeffs[2]*x0 + coeffs[1]);
+        AD<double> f0 = coeffs[0] + coeffs[1]*x0 + coeffs[2]*pow(x0,2) + coeffs[3]*pow(x0,3);
+        AD<double> psides0 = CppAD::atan(3*coeffs[3]*pow(x0,2) + 2*coeffs[2]*x0 + coeffs[1]);
 
         fg[1 + x_start + t] = x1 - (x0 + v0 * CppAD::cos(psi0) * dt);
         fg[1 + y_start + t] = y1 - (y0 + v0 * CppAD::sin(psi0) * dt);
@@ -176,12 +181,12 @@ vector<double> MPC::Solve(Eigen::VectorXd state, Eigen::VectorXd coeffs) {
   }
 
   // Set the initial variable values
-  vars[x_start] = x;
+  /*vars[x_start] = x;
   vars[y_start] = y;
   vars[psi_start] = psi;
   vars[v_start] = v;
   vars[cte_start] = cte;
-  vars[epsi_start] = epsi;
+  vars[epsi_start] = epsi;*/
 
   Dvector vars_lowerbound(n_vars);
   Dvector vars_upperbound(n_vars);
@@ -199,8 +204,8 @@ vector<double> MPC::Solve(Eigen::VectorXd state, Eigen::VectorXd coeffs) {
   // degrees (values in radians)
   for (int i = delta_start; i < a_start; i++)
   {
-      vars_lowerbound[i] = -0.436332*Lf;
-      vars_upperbound[i] = 0.436332*Lf;
+      vars_lowerbound[i] = -0.436332*1;
+      vars_upperbound[i] = 0.436332*1;
   }
 
   // Accelerations and deccelerations upper and lower limits
@@ -279,10 +284,10 @@ vector<double> MPC::Solve(Eigen::VectorXd state, Eigen::VectorXd coeffs) {
   result.push_back(solution.x[delta_start]);
   result.push_back(solution.x[a_start]);
 
-  for (int i = 0; i < N-1; i++)
+  for (int i = 0; i < N; i++)
   {
-      result.push_back(solution.x[x_start + i + 1]);
-      result.push_back(solution.x[y_start + i + 1]);
+      result.push_back(solution.x[x_start + i]);
+      result.push_back(solution.x[y_start + i]);
   }
   return result;
 }

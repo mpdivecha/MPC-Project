@@ -1,5 +1,7 @@
 .vscode
 build
+Ipopt-3.12.7
+mpc_to_line
 tags
 .editorconfig
 .DS_Store

@@ -583,14 +583,14 @@ s,@LT_LDFLAGS@,-no-undefined,;t t
 s,@COIN_SKIP_PROJECTS@,,;t t
 s,@subdirs@, ThirdParty/ASL ThirdParty/Mumps Ipopt,;t t
 s,@coin_have_doxygen@,no,;t t
-s,@coin_have_latex@,no,;t t
+s,@coin_have_latex@,yes,;t t
 s,@coin_doxy_usedot@,NO,;t t
 s,@coin_doxy_tagname@,doxydoc/ipopt_doxy.tag,;t t
 s,@coin_doxy_logname@,doxydoc/ipopt_doxy.log,;t t
 s,@COIN_HAS_DOXYGEN_TRUE@,#,;t t
 s,@COIN_HAS_DOXYGEN_FALSE@,,;t t
-s,@COIN_HAS_LATEX_TRUE@,#,;t t
-s,@COIN_HAS_LATEX_FALSE@,,;t t
+s,@COIN_HAS_LATEX_TRUE@,,;t t
+s,@COIN_HAS_LATEX_FALSE@,#,;t t
 s,@coin_doxy_tagfiles@,,;t t
 s,@coin_doxy_excludes@,,;t t
 s,@LIBEXT@,a,;t t

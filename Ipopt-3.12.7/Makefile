@@ -115,8 +115,8 @@ COIN_CXX_IS_CL_FALSE =
 COIN_CXX_IS_CL_TRUE = #
 COIN_HAS_DOXYGEN_FALSE = 
 COIN_HAS_DOXYGEN_TRUE = #
-COIN_HAS_LATEX_FALSE = 
-COIN_HAS_LATEX_TRUE = #
+COIN_HAS_LATEX_FALSE = #
+COIN_HAS_LATEX_TRUE = 
 COIN_SKIP_PROJECTS = 
 CPP = gcc -E
 CPPFLAGS = 
@@ -214,7 +214,7 @@ coin_doxy_tagfiles =
 coin_doxy_tagname = doxydoc/ipopt_doxy.tag
 coin_doxy_usedot = NO
 coin_have_doxygen = no
-coin_have_latex = no
+coin_have_latex = yes
 datadir = ${prefix}/share
 exec_prefix = ${prefix}
 have_autoconf = 
@@ -263,7 +263,7 @@ DISTCLEANFILES = coin_subdirs.txt $(am__append_2) \
 DocFiles = README AUTHORS LICENSE 
 DocInstallDir = $(datadir)/coin/doc/$(PACKAGE_NAME)
 COIN_HAS_DOXYGEN = #TRUE
-COIN_HAS_LATEX = #TRUE
+COIN_HAS_LATEX = TRUE
 all: all-recursive
 
 .SUFFIXES:

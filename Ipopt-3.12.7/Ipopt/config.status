@@ -662,14 +662,14 @@ s,@BLUEGENEEXTRA@,echo,;t t
 s,@AIX_FIX_COMPILER_BUG_TRUE@,#,;t t
 s,@AIX_FIX_COMPILER_BUG_FALSE@,,;t t
 s,@coin_have_doxygen@,no,;t t
-s,@coin_have_latex@,no,;t t
+s,@coin_have_latex@,yes,;t t
 s,@coin_doxy_usedot@,NO,;t t
 s,@coin_doxy_tagname@,doxydoc/ipopt_doxy.tag,;t t
 s,@coin_doxy_logname@,doxydoc/ipopt_doxy.log,;t t
 s,@COIN_HAS_DOXYGEN_TRUE@,#,;t t
 s,@COIN_HAS_DOXYGEN_FALSE@,,;t t
-s,@COIN_HAS_LATEX_TRUE@,#,;t t
-s,@COIN_HAS_LATEX_FALSE@,,;t t
+s,@COIN_HAS_LATEX_TRUE@,,;t t
+s,@COIN_HAS_LATEX_FALSE@,#,;t t
 s,@coin_doxy_tagfiles@,,;t t
 s,@coin_doxy_excludes@,,;t t
 s,@PKG_CONFIG@,,;t t
