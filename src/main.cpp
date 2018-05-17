@@ -65,19 +65,34 @@ Eigen::VectorXd polyfit(Eigen::VectorXd xvals, Eigen::VectorXd yvals,
   return result;
 }
 
+const std::string red("\033[0;31m");
+const std::string green("\033[1;32m");
+const std::string yellow("\033[1;33m");
+const std::string cyan("\033[0;36m");
+const std::string magenta("\033[0;35m");
+const std::string reset("\033[0m");
+
 int main() {
   uWS::Hub h;
 
   // MPC is initialized here!
   vector<double> cost_multipliers;
-  cost_multipliers.push_back(5);        // CTE cost
-  cost_multipliers.push_back(400);      // Epsi cost 
+//   cost_multipliers.push_back(10);     // CTE cost
+//   cost_multipliers.push_back(150);     // Epsi cost 
+//   cost_multipliers.push_back(1*0.199844762);        // v cost
+//   cost_multipliers.push_back(10);        // delta actuator use cost
+//   cost_multipliers.push_back(5);        // a actuator use cost
+//   cost_multipliers.push_back(300);       // delta actuator gap cost
+//   cost_multipliers.push_back(5);       // a actuator gap cost
+  cost_multipliers.push_back(6000);     // CTE cost
+  cost_multipliers.push_back(6000);     // Epsi cost 
   cost_multipliers.push_back(1);        // v cost
-  cost_multipliers.push_back(10);       // delta actuator use cost
-  cost_multipliers.push_back(10);       // a actuator use cost
-  cost_multipliers.push_back(10);       // delta actuator gap cost
+  cost_multipliers.push_back(10);        // delta actuator use cost
+  cost_multipliers.push_back(10);        // a actuator use cost
+  cost_multipliers.push_back(200);       // delta actuator gap cost
   cost_multipliers.push_back(10);       // a actuator gap cost
   MPC mpc(cost_multipliers);
+  //cout << "multiplier: " << cost_multipliers << endl;
 
   h.onMessage([&mpc](uWS::WebSocket<uWS::SERVER> ws, char *data, size_t length,
                      uWS::OpCode opCode) {
@@ -99,7 +114,7 @@ int main() {
           double py = j[1]["y"];
           double psi = j[1]["psi"];
           double v = j[1]["speed"];
-          v *= 0.44704;         // Convert to meters per second from mph
+          //v *= 0.44704;
           double steer_value = j[1]["steering_angle"];
           double throttle_value = j[1]["throttle"];
 
@@ -118,19 +133,19 @@ int main() {
 
           auto coeffs = polyfit(ptsx_map, ptsy_map, 3);
 
-          double cte = -polyeval(coeffs, 0);
+          double cte = polyeval(coeffs, 0);
           double epsi = -atan(coeffs[1]);
 
           // Here we generate the current state predictions
-          int latency = 0.1;
+          double latency = 0.1;
           double Lf = 2.67;
 
-          double state_psi = 0;// + v/Lf * (steer_value) * latency;
-          double state_v = v + throttle_value*latency;
-          double state_x = 0;// + v*cos(0)*latency;
+          double state_x = 0 + v*cos(0)*latency;
           double state_y = 0;// + v*sin(state_psi)*latency;
-          double state_epsi = epsi;// - v/Lf * steer_value * latency; // - atan(coeffs[1]); 
-          double state_cte = cte;// + v*sin(epsi)*latency;
+          double state_psi = 0 - v*steer_value/Lf*latency;
+          double state_v = v + throttle_value*latency; 
+          double state_cte = cte + v*sin(epsi)*latency;
+          double state_epsi = epsi - v*steer_value/Lf*latency; // - atan(coeffs[1]);
 
           Eigen::VectorXd state(6);
           state << state_x, state_y, state_psi, state_v, state_cte, state_epsi;
@@ -148,20 +163,23 @@ int main() {
           // NOTE: Remember to divide by deg2rad(25) before you send the steering value back.
           // Otherwise the values will be in between [-deg2rad(25), deg2rad(25] instead of [-1, 1].
           steer_value = vars[0]/(deg2rad(25)*Lf);
-          if (steer_value > 1) steer_value = 1;
-          else if(steer_value < -1) steer_value = -1;
+          //if (steer_value > 1) steer_value = 1;
+          //else if(steer_value < -1) steer_value = -1;
+          //std::cout << "steer_value_before: " << vars[0]/(deg2rad(25)*1);
+          //std::cout << " vars0: " << vars[0] << " steer_value_after: " << steer_value << std::endl;
 
           throttle_value = vars[1];
-          if (throttle_value > 1) throttle_value = 1;
-          else if (throttle_value < -1) throttle_value = -1;
+          //if (throttle_value > 1) throttle_value = 1;
+          //else if (throttle_value < -1) throttle_value = -1;
 
           msgJson["steering_angle"] = steer_value;
           msgJson["throttle"] = throttle_value;
 
+          if (abs(state_cte) > 1) cout << red;
           cout << "steer: " << steer_value << " throttle: " << throttle_value;
           cout << " cte: " << state_cte << " epsi: " << epsi;
           double curvature = coeffs[3]*coeffs[3]*10000;
-          cout << " curvature: " << curvature << " cxv: " << pow(coeffs[3]*100*state_v,2 ) << endl;
+          cout << " curvature: " << curvature << " cxv: " << pow(coeffs[3]*100*state_v,2 ) << endl << reset;
 
           //Display the MPC predicted trajectory 
           vector<double> mpc_x_vals;
@@ -192,7 +210,7 @@ int main() {
           //.. add (x,y) points to list here, points are in reference to the vehicle's coordinate system
           // the points in the simulator are connected by a Yellow line
           double poly_inc = 2.5;
-          int num_points = 15;
+          int num_points = 25;
           for (int i = 1; i < num_points; i++)
           {
               next_x_vals.push_back(poly_inc * i);
