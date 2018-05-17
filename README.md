@@ -30,15 +30,13 @@ The optimal control problem referred above is a nonlinear optimization problem t
 The cost in our case is given by:
 <p align="center"><img src="svgs/76999a1fb9f84ea2d11a73514a63238d.svg?invert_in_darkmode&sanitize=true" align=middle width=488.70195pt height=162.51906pt/></p>
 
-The code for the costs is at [TODO: MPC.cpp lines for cost ](src/MPC.cpp#L58-86)
-
-[TODO: Explain the above variables here]
+The terms in the first summation penalize <img src="svgs/033c3e786bd654c4068f94e4d22700ea.svg?invert_in_darkmode&sanitize=true" align=middle width=20.626815pt height=20.1465pt/>, <img src="svgs/ca392f1289f2cf9b02a9fe9c96d981ad.svg?invert_in_darkmode&sanitize=true" align=middle width=18.88095pt height=22.74591pt/> and <img src="svgs/6c4adbc36120d62b98deef2a20d5d303.svg?invert_in_darkmode&sanitize=true" align=middle width=8.52588pt height=14.10255pt/> that diverge from the desired values. The first two terms in the second summmation penalize high values of actuators. The term <img src="svgs/f13e4949a2ad173752b2a50ba840e2d6.svg?invert_in_darkmode&sanitize=true" align=middle width=54.28236pt height=26.70657pt/> penalizes high speeds around curves. <img src="svgs/5c62da39aa7289df62d937cb24a31161.svg?invert_in_darkmode&sanitize=true" align=middle width=9.435855pt height=14.10255pt/> denotes the curvature of the road in this case, which is approximated using the highest polynomial coefficent in the code. Finally, the third summation penalizes high differences in the values of previous and current actuators values. This makes turns and acceleration smoother. <img src="svgs/31fae8b8b78ebe01cbfbe2fe53832624.svg?invert_in_darkmode&sanitize=true" align=middle width=12.165285pt height=14.10255pt/> specifies how much weight we assign to each of the cost terms in the equation, effectively allowing us to tweak the amount of contribution of each. The code for the costs is at [MPC.cpp#L58-86](src/MPC.cpp#L58-86)
 
 The constraints in our case are given by:
 
 <p align="center"><img src="svgs/2759068c07eea3bbddfcba9d2369dec5.svg?invert_in_darkmode&sanitize=true" align=middle width=105.73233pt height=41.03451pt/></p>
 
-The code for these constraints is at [TODO: MPC.cpp lines for constraints ](src/MPC.cpp#L191-212)
+The constraints specify the range of values the variables can take. The code for these constraints is at [MPC.cpp#L191-212](src/MPC.cpp#L191-212)
 
 #### Reference frame
 
@@ -46,11 +44,11 @@ The computations for the model are done in the reference frame of the vehicle. S
 
 #### Trajectory representation
 
-The trajectory in our case consists of waypoints that are pre-defined along the route of travel. These waypoints are represented by a third degree polynomial <img src="svgs/d53011c4c7824fee58ecd4cecbff13ee.svg?invert_in_darkmode&sanitize=true" align=middle width=46.24521pt height=24.56553pt/>. It is computed in the code at [TODO: main.cpp polyfit call](src/main.cpp#L119)
+The trajectory in our case consists of waypoints that are pre-defined along the route of travel. These waypoints are represented by the coefficients of a third degree polynomial computed by `polyfit` [here](src/main.cpp#L119)
 
 #### Latency
 
-The simulation adds a latency of about 100ms. This is to simulate the delay between actuation and effect. We need to account for this latency properly otherwise the computed and reference trajectories will keep diverging. The code for this is at [TODO: main.cpp lines for updated state equations]
+The simulation adds a latency of about 100ms. This is to simulate the delay between actuation and effect. We need to account for this latency properly otherwise the computed and reference trajectories will keep diverging. We do this by setting the initial state for MPC to be the one we estimate after accounting for latency. The code for this is at [TODO: main.cpp lines for updated state equations]. Additionally, `dt` also plays a big role in this. The best results are obtained by setting `dt` to the value of the expected latency. 
 
 ## Dependencies
 

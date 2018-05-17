@@ -45,9 +45,7 @@ J = &\sum_{t=1}^N[ w_{cte}(cte_t - cte_{ref})^2 + w_{e\psi}(e\psi_t - e\psi_{ref
 \end{align}
 $$
 
-The code for the costs is at [TODO: MPC.cpp lines for cost ](src/MPC.cpp#L58-86)
-
-[TODO: Explain the above variables here]
+The terms in the first summation penalize $cte$, $e\psi$ and $v$ that diverge from the desired values. The first two terms in the second summmation penalize high values of actuators. The term $(\kappa \cdot v_t)^2$ penalizes high speeds around curves. $\kappa$ denotes the curvature of the road in this case, which is approximated using the highest polynomial coefficent in the code. Finally, the third summation penalizes high differences in the values of previous and current actuators values. This makes turns and acceleration smoother. $w$ specifies how much weight we assign to each of the cost terms in the equation, effectively allowing us to tweak the amount of contribution of each. The code for the costs is at [MPC.cpp#L58-86](src/MPC.cpp#L58-86)
 
 The constraints in our case are given by:
 
@@ -58,7 +56,7 @@ a &\in [-1, 1]
 \end{align}
 $$
 
-The code for these constraints is at [TODO: MPC.cpp lines for constraints ](src/MPC.cpp#L191-212)
+The constraints specify the range of values the variables can take. The code for these constraints is at [MPC.cpp#L191-212](src/MPC.cpp#L191-212)
 
 #### Reference frame
 
@@ -66,11 +64,11 @@ The computations for the model are done in the reference frame of the vehicle. S
 
 #### Trajectory representation
 
-The trajectory in our case consists of waypoints that are pre-defined along the route of travel. These waypoints are represented by a third degree polynomial $p(x,y)$. It is computed in the code at [TODO: main.cpp polyfit call](src/main.cpp#L119)
+The trajectory in our case consists of waypoints that are pre-defined along the route of travel. These waypoints are represented by the coefficients of a third degree polynomial computed by `polyfit` [here](src/main.cpp#L119)
 
 #### Latency
 
-The simulation adds a latency of about 100ms. This is to simulate the delay between actuation and effect. We need to account for this latency properly otherwise the computed and reference trajectories will keep diverging. The code for this is at [TODO: main.cpp lines for updated state equations]
+The simulation adds a latency of about 100ms. This is to simulate the delay between actuation and effect. We need to account for this latency properly otherwise the computed and reference trajectories will keep diverging. We do this by setting the initial state for MPC to be the one we estimate after accounting for latency. The code for this is at [TODO: main.cpp lines for updated state equations]. Additionally, `dt` also plays a big role in this. The best results are obtained by setting `dt` to the value of the expected latency. 
 
 ## Dependencies
 
