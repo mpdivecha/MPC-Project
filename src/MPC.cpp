@@ -23,7 +23,7 @@ const double Lf = 2.67;
 
 // Both the reference cross track and orientation errors are 0.
 // The reference velocity is set to 40 mph
-double ref_v = 150;// * 0.44704;
+double ref_v = 150;
 
 // The solver takes all the state variables and actuator
 // variables in a singular vector. Thus, we should establish when
@@ -58,10 +58,7 @@ class FG_eval {
     // The part of the cost based on the referebce state
     for (int t = 0; t < N; t++)
     {
-        //if (abs(vars[cte_start + t]) > 1.0)
-        //    fg[0] += 2*cost_multipliers[0]*CppAD::pow(vars[cte_start + t], 2);
-        //else
-            fg[0] += cost_multipliers[0]*CppAD::pow(vars[cte_start + t], 2);
+        fg[0] += cost_multipliers[0]*CppAD::pow(vars[cte_start + t], 2);
         fg[0] += cost_multipliers[1]*CppAD::pow(vars[epsi_start + t], 2);
         fg[0] += cost_multipliers[2]*CppAD::pow(vars[v_start + t] - ref_v, 2);
     }
@@ -71,10 +68,8 @@ class FG_eval {
     {
         fg[0] += cost_multipliers[3]*CppAD::pow(vars[delta_start + t], 2);
         fg[0] += cost_multipliers[4]*CppAD::pow(vars[a_start + t], 2);
-        // Penalize use of large steering values at high speeds
-        //fg[0] += 5*CppAD::pow(vars[delta_start + t] * vars[v_start + t], 2);
+        // Penalize high speeds when nearing a curve
         fg[0] += 50*CppAD::pow(coeffs[3]*100*vars[v_start + t],2);
-        //fg[0] += 1/(1 - CppAD::pow(vars[a_start + t], 2));
     }
 
     // Minimize the value gap between sequential actuations
@@ -179,14 +174,6 @@ vector<double> MPC::Solve(Eigen::VectorXd state, Eigen::VectorXd coeffs) {
   for (int i = 0; i < n_vars; i++) {
     vars[i] = 0;
   }
-
-  // Set the initial variable values
-  /*vars[x_start] = x;
-  vars[y_start] = y;
-  vars[psi_start] = psi;
-  vars[v_start] = v;
-  vars[cte_start] = cte;
-  vars[epsi_start] = epsi;*/
 
   Dvector vars_lowerbound(n_vars);
   Dvector vars_upperbound(n_vars);
