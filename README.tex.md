@@ -30,9 +30,11 @@ Here $x_t, y_t, \psi_t, v_t, cte_t, e\psi_t$ represents the current state of the
 
 Furthermore, $\delta_t$ and $a_t$ represent the actuators of the system. $\delta_t$ is the change in heading, which can be assumed as the amount of steering to apply. $a_t$ is the acceleration and is used as an approximation of the throttle to be applied.
 
+The model updates can be found at [MPC.cpp#L124-129](src/MPC.cpp#L124-129).
+
 ### Model Predictive Control
 
-Once we have the kinematic model of our vehicle, we can use MPC to estimate our future trajectory. In MPC, an optimal control problem is "solved" for a certain number of steps, called the horizon, based on certain frequency. The horizon and frequency are represented in the code by variables `N` and `dt` in file [MPC.cpp](src/MPC.cpp#L9-10) . 
+Once we have the kinematic model of our vehicle, we can use MPC to estimate our future trajectory. In MPC, an optimal control problem is "solved" for a certain number of steps, called the horizon, based on certain frequency. The horizon and frequency are represented in the code by variables `N` and `dt` in file [MPC.cpp#L9-10](src/MPC.cpp#L9-10) . 
 
 The optimal control problem referred above is a nonlinear optimization problem that tries to minimize a certain cost given certain constraints. 
 
@@ -45,7 +47,7 @@ J = &\sum_{t=1}^N[ w_{cte}(cte_t - cte_{ref})^2 + w_{e\psi}(e\psi_t - e\psi_{ref
 \end{align}
 $$
 
-The terms in the first summation penalize $cte$, $e\psi$ and $v$ that diverge from the desired values. The first two terms in the second summmation penalize high values of actuators. The term $(\kappa \cdot v_t)^2$ penalizes high speeds around curves. $\kappa$ denotes the curvature of the road in this case, which is approximated using the highest polynomial coefficent in the code. Finally, the third summation penalizes high differences in the values of previous and current actuators values. This makes turns and acceleration smoother. $w$ specifies how much weight we assign to each of the cost terms in the equation, effectively allowing us to tweak the amount of contribution of each. The code for the costs is at [MPC.cpp#L58-86](src/MPC.cpp#L58-86)
+The terms in the first summation penalize $cte$, $e\psi$ and $v$ that diverge from the desired values. The first two terms in the second summmation penalize high values of actuators. The term $(\kappa \cdot v_t)^2$ penalizes high speeds around curves. $\kappa$ denotes the curvature of the road in this case, which is approximated using the highest polynomial coefficent in the code. Finally, the third summation penalizes high differences of previous and current actuators values. This makes turns and acceleration smoother. $w$ specifies how much weight we assign to each of the cost terms in the equation, effectively allowing us to tweak the amount of contribution of each. The code for the costs is at [MPC.cpp#L58-80](src/MPC.cpp#L58-80)
 
 The constraints in our case are given by:
 
@@ -56,19 +58,27 @@ a &\in [-1, 1]
 \end{align}
 $$
 
-The constraints specify the range of values the variables can take. The code for these constraints is at [MPC.cpp#L191-212](src/MPC.cpp#L191-212)
+The constraints specify the range of values the variables can take. The code for these constraints is at [MPC.cpp#L182-203](src/MPC.cpp#L182-203)
 
 #### Reference frame
 
-The computations for the model are done in the reference frame of the vehicle. Since the waypoints are received in global coordinates, they are converted into vehicle coordinates at [TODO: main.cpp transform lines](src/main.cpp#L106-114)
+The computations for the model are done in the reference frame of the vehicle. Since the waypoints are received in global coordinates, they are converted into vehicle coordinates at [main.cpp#L112-120](src/main.cpp#L112-120)
 
 #### Trajectory representation
 
-The trajectory in our case consists of waypoints that are pre-defined along the route of travel. These waypoints are represented by the coefficients of a third degree polynomial computed by `polyfit` [here](src/main.cpp#L119)
+The trajectory in our case consists of waypoints that are pre-defined along the route of travel. These waypoints are represented by the coefficients of a third degree polynomial computed by `polyfit` [here](src/main.cpp#L125)
 
 #### Latency
 
-The simulation adds a latency of about 100ms. This is to simulate the delay between actuation and effect. We need to account for this latency properly otherwise the computed and reference trajectories will keep diverging. We do this by setting the initial state for MPC to be the one we estimate after accounting for latency. The code for this is at [TODO: main.cpp lines for updated state equations]. Additionally, `dt` also plays a big role in this. The best results are obtained by setting `dt` to the value of the expected latency. 
+The simulation adds a latency of about 100ms. This is to simulate the delay between actuation and effect. We need to account for this latency properly otherwise the computed and reference trajectories will keep diverging. We do this by setting the initial state for MPC to be the one we estimate after accounting for latency. The code for this is at [main.cpp#L134-139](src/main.cpp#L134-139). Additionally, `dt` also plays a big role in this. The best results are obtained by setting `dt` to the value of the expected latency.
+
+### Demo
+A demo of the program can be found [here](https://www.youtube.com/watch?v=Ds6BYu8976s)
+<div align="center">
+  <a href="https://www.youtube.com/watch?v=Ds6BYu8976s"><img src="https://img.youtube.com/vi/Ds6BYu8976s/0.jpg" alt="IMAGE ALT TEXT"></a>
+</div>
+
+---
 
 ## Dependencies
 
