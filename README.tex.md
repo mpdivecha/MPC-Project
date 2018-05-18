@@ -5,7 +5,7 @@ Self-Driving Car Engineer Nanodegree Program
 
 ## Project Goal
 
-The goal of the project is to model a self-driving car using a Model Predictive Controller. The model is tested on a simulated car in the Udacity simulator. The following are the expectations of the project:
+The goal of the project is to model a self-driving using a Model Predictive Controller. The model is tested on a simulated car in the Udacity simulator. The following are the expectations of the project:
 
 - The car should stay within the lane and not veer too far off the center.
 - The car should drive smoothly minimizing any jerky movements.
