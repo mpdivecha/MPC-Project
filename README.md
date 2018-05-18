@@ -5,7 +5,7 @@ Self-Driving Car Engineer Nanodegree Program
 
 ## Project Goal
 
-The goal of the project is to model a self-driving using a Model Predictive Controller. The model is tested on a simulated car in the Udacity simulator. The following are the expectations of the project:
+The goal of the project is to model a self-driving car using a Model Predictive Controller. The model is tested on a simulated car in the Udacity simulator. The following are the expectations of the project:
 
 - The car should stay within the lane and not veer too far off the center.
 - The car should drive smoothly minimizing any jerky movements.
@@ -50,7 +50,7 @@ The trajectory in our case consists of waypoints that are pre-defined along the 
 
 #### Latency
 
-The simulation adds a latency of about 100ms. This is to simulate the delay between actuation and effect. We need to account for this latency properly otherwise the computed and reference trajectories will keep diverging. We do this by setting the initial state for MPC to be the one we estimate after accounting for latency. The code for this is at [main.cpp#L134-139](src/main.cpp#L134-139). Additionally, `dt` also plays a big role in this. The best results are obtained by setting `dt` to the value of the expected latency.
+The simulation adds a latency of about 100ms. This is to simulate the delay between actuation and effect. We need to account for this latency accurately otherwise the computed and reference trajectories will keep diverging. We do this by setting the initial state for MPC to be the one we estimate after accounting for latency. The code for this is at [main.cpp#L134-139](src/main.cpp#L134-139). Additionally, `dt` also plays a big role in this. The best results are obtained by setting `dt` to the value of the expected latency.
 
 ### Demo
 A demo of the program can be found [here](https://www.youtube.com/watch?v=Ds6BYu8976s)

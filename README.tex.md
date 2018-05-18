@@ -70,7 +70,7 @@ The trajectory in our case consists of waypoints that are pre-defined along the 
 
 #### Latency
 
-The simulation adds a latency of about 100ms. This is to simulate the delay between actuation and effect. We need to account for this latency properly otherwise the computed and reference trajectories will keep diverging. We do this by setting the initial state for MPC to be the one we estimate after accounting for latency. The code for this is at [main.cpp#L134-139](src/main.cpp#L134-139). Additionally, `dt` also plays a big role in this. The best results are obtained by setting `dt` to the value of the expected latency.
+The simulation adds a latency of about 100ms. This is to simulate the delay between actuation and effect. We need to account for this latency accurately otherwise the computed and reference trajectories will keep diverging. We do this by setting the initial state for MPC to be the one we estimate after accounting for latency. The code for this is at [main.cpp#L134-139](src/main.cpp#L134-139). Additionally, `dt` also plays a big role in this. The best results are obtained by setting `dt` to the value of the expected latency.
 
 ### Demo
 A demo of the program can be found [here](https://www.youtube.com/watch?v=Ds6BYu8976s)
